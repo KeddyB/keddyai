@@ -298,16 +298,25 @@ let savedArticles = [];
 
 // News by Source
 intent('Give me the news from $(source* (.*))', (p) => {
-    let NEWS_API_URL = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=b7de4edce5d849e3a3198b6d8c6c6529`;
+    let NEWS_API_URL = `https://newsapi.org/v2/top-headlines?apiKey=b7de4edce5d849e3a3198b6d8c6c6529`;
     
     if(p.source.value) {
         NEWS_API_URL = `${NEWS_API_URL}&sources=${p.source.value.toLowerCase().split(" ").join('-')}`
     }
     
-    api.request(NEWS_API_URL, (error, response, body) => {
-        const { articles } = JSON.parse(body);
+    api.request(NEWS_API_URL, (error,req, response, body) => {
+        const userAgent = req.get('user-agent');
         
-        if(!articles.length) {
+        let articles = JSON.parse(body);
+        const options = {
+          host: 'newsapi.org',
+          path: '/v2/top-headlines?country=in&apiKey=xxxxxxxx',
+          headers: {
+               'User-Agent': userAgent
+          }
+        }
+        
+        if(!articles) {
             p.play('Sorry, please try searching for news from a different source');
             return;
         }
@@ -315,9 +324,6 @@ intent('Give me the news from $(source* (.*))', (p) => {
         savedArticles = articles;
         
         p.play({ command: 'newHeadlines', articles });
-        p.play(`Here are the (latest|recent) ${p.source.value}.`);
-  
-        p.play('Would you like me to read the headlines?');
-        p.then(confirmation);
+        p.play(`(Here|These) are the (latest|recent) ${p.source.value}.`);
     });
 })
