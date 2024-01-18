@@ -8,7 +8,7 @@ function App() {
     alanBtn({
       key: alanKey,
       onCommand: ({ command, articles }) => {
-        if (command === 'newsHeadlines') {
+        if (command === 'newHeadlines') {
           console.log(articles)
         }
       }
