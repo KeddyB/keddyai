@@ -7,11 +7,12 @@ function App() {
   useEffect(() => {
     alanBtn({
       key: alanKey,
-      onCommand: ({ command }) => {
-        if(command === 'testCommand'){
+      onCommand: (commandData) => {
+        if (commandData.command === 'testCommand') {
           alert('the command was executed')
         }
-      }
+      },
+      zIndex: 10
     })
   }, [])
   return (
